@@ -8,7 +8,7 @@ async function main() {
 
   const NAME = "RealWorldAssetNFT";
   const SYMBOL = "RWA";
-  const ADMIN = deployer.address; // می‌تونی بزاری آدرس دیگه‌ای باشه
+  const ADMIN = deployer.address; 
 
   const RWA_NFT = await ethers.getContractFactory("RWA_NFT");
   const rwaNFT = await RWA_NFT.deploy(NAME, SYMBOL, ADMIN);
