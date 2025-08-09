@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "compile:zk": "circom circuits/whitelist.circom --r1cs --wasm --sym -o circuits/build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,11 +20,14 @@
   "homepage": "https://github.com/mobinsaeidi/assetchain#readme",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "circom": "^0.5.46",
+    "circom_tester": "^0.0.24",
     "dotenv": "^17.2.1",
     "hardhat": "^2.26.2",
     "hardhat-deploy": "^1.0.4"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.4.0"
+    "@openzeppelin/contracts": "^5.4.0",
+    "circomlibjs": "^0.1.7"
   }
 }
