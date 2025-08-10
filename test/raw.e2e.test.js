@@ -1,42 +1,29 @@
-const fs = require('fs');
-const path = require('path');
-const snarkjs = require('snarkjs');
-const { loadProofData, getCalldata } = require('./utils/loadProofData');
+const { expect } = require("chai");
+const { getCalldata } = require('./utils/loadProofData');
 
 
-/**
- * Utility to load proof data from disks.
- * @param {boolean} corrupted - Set true to load proof_corrupted.json instead of valid proof.
- */
-function loadProofData(corrupted = false) {
-  const proofFileName = corrupted ? 'proof_corrupted.json' : 'proof_valid.json';
+describe("ZK Proof Verification", function () {
+  let verifier;
 
-  const proofPath = path.join(__dirname, '../circuits/build', proofFileName);
-  const publicSignalsPath = path.join(__dirname, '../circuits/build/publicSignals.json');
+  before(async () => {
+    // ساختن corrupted proof قبل از تست‌ها
+    require("../scripts/make_corrupted_proof");
 
-  const proofFile = JSON.parse(fs.readFileSync(proofPath, 'utf8'));
-  const publicSignalsFile = JSON.parse(fs.readFileSync(publicSignalsPath, 'utf8'));
+    // گرفتن instance از قرارداد Verifier
+    const Verifier = await ethers.getContractFactory("Groth16Verifier");
+    verifier = await Verifier.deploy();
+    await verifier.waitForDeployment();
+  });
 
-  if (!proofFile || Object.keys(proofFile).length === 0) {
-    throw new Error(`${proofFileName} is empty or invalid`);
-  }
+  it("✅ Should verify correct proof", async function () {
+    const calldata = await getCalldata(false); // valid proof
+    const args = calldata.replace(/["[\]\s]/g, "").split(",").map(x => BigInt(x).toString());
+    expect(await verifier.verifyProof(...args)).to.equal(true);
+  });
 
-  if (!publicSignalsFile || publicSignalsFile.length === 0) {
-    throw new Error('publicSignals.json is empty or invalid');
-  }
-
-  return { proof: proofFile, publicSignals: publicSignalsFile };
-}
-
-/**
- * Helper to generate call data directly from loaded proof.
- * @param {boolean} corrupted - Pass true to use corrupted proof.
- */
-async function getCalldata(corrupted = false) {
-  const { proof, publicSignals } = loadProofData(corrupted);
-  return snarkjs.groth16.exportSolidityCallData(proof, publicSignals);
-}
-
-module.exports = { loadProofData, getCalldata };
-
-
+  it("❌ Should return false for invalid proof", async function () {
+    const calldata = await getCalldata(true); // corrupted proof
+    const args = calldata.replace(/["[\]\s]/g, "").split(",").map(x => BigInt(x).toString());
+    expect(await verifier.verifyProof(...args)).to.equal(false);
+  });
+});
