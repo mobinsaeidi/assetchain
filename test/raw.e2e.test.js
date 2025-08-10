@@ -1,7 +1,6 @@
 const { expect } = require("chai");
 const { getCalldata } = require('./utils/loadProofData');
 
-
 describe("ZK Proof Verification", function () {
   let verifier;
 
@@ -16,14 +15,22 @@ describe("ZK Proof Verification", function () {
   });
 
   it("✅ Should verify correct proof", async function () {
-    const calldata = await getCalldata(false); // valid proof
-    const args = calldata.replace(/["[\]\s]/g, "").split(",").map(x => BigInt(x).toString());
+    const proofValid = require("../build/proof_valid.json");
+    const publicSignalsValid = require("../build/publicSignals.json");
+
+    const calldata = await getCalldata(proofValid, publicSignalsValid);
+    const args = calldata.map(x => BigInt(x).toString());
+
     expect(await verifier.verifyProof(...args)).to.equal(true);
   });
 
   it("❌ Should return false for invalid proof", async function () {
-    const calldata = await getCalldata(true); // corrupted proof
-    const args = calldata.replace(/["[\]\s]/g, "").split(",").map(x => BigInt(x).toString());
+    const proofInvalid = require("../build/proof_corrupted.json");
+    const publicSignalsInvalid = require("../build/publicSignals.json");
+
+    const calldata = await getCalldata(proofInvalid, publicSignalsInvalid);
+    const args = calldata.map(x => BigInt(x).toString());
+
     expect(await verifier.verifyProof(...args)).to.equal(false);
   });
 });
