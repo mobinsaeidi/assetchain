@@ -2,6 +2,8 @@ const { expect } = require("chai");
 const fs = require("fs");
 const path = require("path");
 const { groth16 } = require("snarkjs");
+const snarkjs = require("snarkjs");
+
 
 describe("Groth16Verifier", function () {
     let verifier;
@@ -43,4 +45,23 @@ describe("Groth16Verifier", function () {
 
         expect(result).to.be.true;
     });
+   
+
+it("Should return true for valid proof", async () => {
+    
+});
+
+
+it("Should return false for invalid proof", async () => {
+    const proof = JSON.parse(fs.readFileSync("./circuits/build/proof.json"));
+    const publicSignals = JSON.parse(fs.readFileSync("./circuits/build/public.json"));
+    
+    publicSignals[0] = (BigInt(publicSignals[0]) + 1n).toString();
+
+    const calldata = await snarkjs.groth16.exportSolidityCallData(proof, publicSignals);
+    const args = JSON.parse("[" + calldata + "]");
+
+    expect(await verifier.verifyProof(args[0], args[1], args[2], args[3])).to.equal(false);
+});
+
 });
