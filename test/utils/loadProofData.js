@@ -1,16 +1,15 @@
 const { groth16 } = require("snarkjs");
 
 async function getCalldata(proof, publicSignals) {
-  // گرفتن calldata از snarkjs
+ 
   let rawCalldata = await groth16.exportSolidityCallData(proof, publicSignals);
 
-  // پاک کردن کاراکترهای اضافی و split کردن بر اساس کاما
+  
   const calldata = rawCalldata
     .replace(/["[\]\s]/g, "")
     .split(",")
-    .map(x => x.toString()); // اجبار به رشته دقیق، جلوگیری از scientific notation
-
-  // تبدیل به چهار آرگومان دقیق برای Groth16Verifier
+    .map(x => x.toString()); 
+  
   const a = [calldata[0], calldata[1]];
   const b = [
     [calldata[2], calldata[3]],
