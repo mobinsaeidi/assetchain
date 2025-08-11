@@ -1,24 +1,23 @@
-const { groth16 } = require("snarkjs");
+const fs = require('fs');
+const path = require('path');
 
-async function getCalldata(proof, publicSignals) {
- 
-  let rawCalldata = await groth16.exportSolidityCallData(proof, publicSignals);
+function getCalldata(proofPath, publicSignalsPath) {
+    const proof = JSON.parse(fs.readFileSync(proofPath, 'utf8'));
+    const publicSignals = JSON.parse(fs.readFileSync(publicSignalsPath, 'utf8'));
 
-  
-  const calldata = rawCalldata
-    .replace(/["[\]\s]/g, "")
-    .split(",")
-    .map(x => x.toString()); 
-  
-  const a = [calldata[0], calldata[1]];
-  const b = [
-    [calldata[2], calldata[3]],
-    [calldata[4], calldata[5]]
-  ];
-  const c = [calldata[6], calldata[7]];
-  const input = calldata.slice(8);
+   
+    const a = proof.pi_a || proof.a;  
+    const b = proof.pi_b || proof.b; 
+    const c = proof.pi_c || proof.c;  
+    const input = publicSignals;
 
-  return [a, b, c, input];
+    
+    return [
+        [BigInt(a[0]), BigInt(a[1])],
+        [[BigInt(b[0][0]), BigInt(b[0][1])], [BigInt(b[1][0]), BigInt(b[1][1])]],
+        [BigInt(c[0]), BigInt(c[1])],
+        input.map(x => BigInt(x))
+    ];
 }
 
 module.exports = { getCalldata };

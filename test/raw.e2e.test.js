@@ -7,11 +7,12 @@ const { getCalldata } = require("./utils/loadProofData");
 describe("ZK Proof Verification", function () {
   let verifier;
 
-  before(async function () {
+  before(async () => {
     const Verifier = await ethers.getContractFactory("Groth16Verifier");
     verifier = await Verifier.deploy();
-    await verifier.deployed();
-  });
+    await verifier.waitForDeployment(); 
+});
+
 
   it("Should verify correct proof", async function () {
     const [a, b, c, input] = await getCalldata(
