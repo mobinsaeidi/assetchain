@@ -1,23 +1,19 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const proofValidPath = path.join(__dirname, '../circuits/build/proof_valid.json');
-const proofCorruptedPath = path.join(__dirname, '../circuits/build/proof_corrupted.json');
+// مسیر فایل‌ها
+const proofPath = path.join(__dirname, "../circuits/build/proof_valid.json");
+const corruptedPath = path.join(__dirname, "../circuits/build/proof_corrupted.json");
 
-function makeCorruptedProof() {
-  
-  const proof = JSON.parse(fs.readFileSync(proofValidPath, 'utf8'));
+// لود پروف اصلی
+const proof = JSON.parse(fs.readFileSync(proofPath, "utf8"));
 
- 
-  if (proof.pi_a && proof.pi_a[0]) {
-    proof.pi_a[0] = (parseInt(proof.pi_a[0]) + 1).toString(); 
-  } else {
-    throw new Error("pi_a not found in proof_valid.json");
-  }
-
- 
-  fs.writeFileSync(proofCorruptedPath, JSON.stringify(proof, null, 2));
-  console.log(`Corrupted proof saved to: ${proofCorruptedPath}`);
+// خراب کردن عدد اول pi_a (مثلاً افزودن 1)
+if (proof.pi_a && proof.pi_a.length > 0) {
+    proof.pi_a[0] = (BigInt(proof.pi_a[0]) + 1n).toString();
 }
 
-makeCorruptedProof();
+// ذخیره پروف خراب
+fs.writeFileSync(corruptedPath, JSON.stringify(proof, null, 2));
+
+console.log("✅ corrupted proof saved to:", corruptedPath);
