@@ -1,5 +1,10 @@
 // scripts/deploy.js
-const { ethers } = require("hardhat");
+import hardhat from "hardhat";
+const { ethers } = hardhat;
+
+describe("MyContract", function () {
+  // ...
+});
 
 async function main() {
   const [deployer] = await ethers.getSigners();

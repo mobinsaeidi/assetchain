@@ -1,5 +1,12 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const hardhat = require("hardhat");
+const { ethers } = hardhat;
+const path = require("path");
+const fs = require("fs");
+
+describe("MyContract", function () {
+  // ...
+});
 const path = require("path");
 const fs = require("fs");
 
