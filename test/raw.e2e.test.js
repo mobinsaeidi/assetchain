@@ -2,8 +2,6 @@ const { expect } = require("chai");
 const hardhat = require("hardhat");
 const { ethers } = hardhat;
 
-const fs = require("fs");
-
 describe("MyContract", function () {
   // ...
 });
