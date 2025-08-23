@@ -2,11 +2,8 @@ import { expect } from "chai";
 import hardhat from "hardhat";
 const { ethers } = hardhat;
 
-describe("MyContract", function () {
-  // ...
-});
-const path = require("path");
-const fs = require("fs");
+import path from "path";
+import fs from "fs";
 
 
 function toBigIntSafe(x) {

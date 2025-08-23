@@ -1,5 +1,7 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import hardhat from "hardhat";
+const { ethers } = hardhat;
+
 
 
 async function deployMockVerifier() {

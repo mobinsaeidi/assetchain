@@ -23,7 +23,7 @@
     "circom": "^0.5.46",
     "circom_tester": "^0.0.24",
     "dotenv": "^17.2.1",
-    "hardhat": "^2.26.2",
+    "hardhat": "^3.0.1",
     "hardhat-deploy": "^1.0.4"
   },
   "dependencies": {
